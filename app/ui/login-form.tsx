@@ -8,15 +8,24 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useActionState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { authenticate } from '@/app/lib/actions';
 
 export default function LoginForm() {
-  const [errorMessage, formAction, isPending] = useActionState(
+  const [errorMessage, formAction] = useFormState(
     authenticate,
     undefined,
   );
   console.log("NEXTAUTH_URL", process.env.NEXTAUTH_URL)
+
+  function LoginButton() {
+    const { pending } = useFormStatus();
+    return (
+      <Button className="mt-4 w-full" aria-disabled={pending}>
+        Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      </Button>
+    );
+  }
 
   return (
     <form action={formAction} className="space-y-3">
@@ -65,9 +74,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
+        <LoginButton />
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
